@@ -56,9 +56,9 @@ public class MockDemoApplicationTests {
 
         ResultActions resultActions = this.mockMvc.perform(MockMvcRequestBuilders.post(url)
                 .param("id", "11"))
-//                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.name").exists())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());
         MvcResult mvcResult = resultActions.andReturn();
         System.out.println(mvcResult);
     }

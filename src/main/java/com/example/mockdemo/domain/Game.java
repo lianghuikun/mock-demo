@@ -49,4 +49,24 @@ public class Game implements Serializable {
             return new Game(this);
         }
     }
+
+    /**
+     * 不为私有变量添加公有方法，则返回值为{} 而不是正确的json
+     * @return
+     */
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

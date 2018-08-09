@@ -1,7 +1,7 @@
 package com.example.mockdemo;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import org.springframework.util.*;
 import com.example.mockdemo.controller.GameController;
 import com.example.mockdemo.domain.City;
 import com.example.mockdemo.domain.Game;
@@ -50,28 +50,7 @@ public class MockDemoApplicationTests {
 
     }
 
-    @Test
-    public void testGetGameById() throws Exception {
-        String url = "/game/getGameById";
-        Game game = new Game.Builder()
-                .withId(1)
-                .withName("coco")
-                .withCityList(Arrays.asList(new City.Builder()
-                        .withId(100)
-                        .withCityName("wuxi")
-                        .builder()))
-                .build();
-        when(gameService.getGameById(anyInt())).thenReturn(game);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post(url)
-                .param("id", "11"))
-                .andDo(MockMvcResultHandlers.print())// 打印结果
-                .andExpect(MockMvcResultMatchers.status().isOk())// 期望状态是200
-                .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString("coco")))// 响应报文中包含字符串 coco
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").exists())// 响应的json串中需要包含name节点
-                .andExpect(MockMvcResultMatchers.jsonPath("$.cityList").exists())// 返回结果必须包含list
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("coco"));// name属性值应当为coco
-    }
 
 
     @Test
@@ -90,25 +69,52 @@ public class MockDemoApplicationTests {
 
 
     @Test
+    public void testGetGameById() throws Exception {
+        String url = "/game/getGameById";
+        Game game = new Game.Builder()
+                .withId(1)
+                .withName("coco")
+                .withCityList(Arrays.asList(new City.Builder()
+                        .withId(100)
+                        .withCityName("wuXi-china")
+                        .builder()))
+                .build();
+        when(gameService.getGameById(anyInt())).thenReturn(game);
+        this.mockMvc.perform(MockMvcRequestBuilders.post(url)
+                .param("id", "11"))
+                .andDo(MockMvcResultHandlers.print())// 打印结果
+                .andExpect(MockMvcResultMatchers.status().isOk())// 期望状态是200
+                .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString("coco")))// 响应报文中包含字符串 coco
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").exists())// 响应的json串中需要包含name节点
+                .andExpect(MockMvcResultMatchers.jsonPath("$.cityList").exists())// 返回结果必须包含list
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("coco"));// name属性值应当为coco
+    }
+    @Test
     public void testSaveGame() throws Exception {
         String url = "/game/saveGame";
         Game game = new Game.Builder()
                 .withId(2)
-                .withName("joker")
+                .withName("darcy")
                 .withCityList(Arrays.asList(new City.Builder()
                         .withId(100)
-                        .withCityName("wuxi")
+                        .withCityName("wuXi-china")
                         .builder()))
                 .build();
+        String content = JSON.toJSONString(game);
+        Assert.assertNotNull(content, "Request must not be null");
         /**
-         * 请求为json时，会报错。controller的入参 @RequestBoy和@validate导致的，
-         * 可能是因为少报，这里就不在深究了
+         * TODO
+         * 请求为json时，会报错Type = org.springframework.web.HttpMediaTypeNotSupportedException。
+         * 根据调用栈追踪猜测是缺少jackson-dataformat-xml的jar，导致
+         * controller中方法的入参注解 @RequestBoy和@validate报错
+         * 因为要下班了，这里就不在深究了
          */
+
+        // actual test code
         this.mockMvc.perform(MockMvcRequestBuilders.post(url)
-                .content(JSON.toJSONString(game))
+                .content(content)
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(MockMvcResultHandlers.print());
-
     }
 
 

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -22,8 +24,15 @@ import java.io.Serializable;
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY,
         content = JsonInclude.Include.NON_NULL)
 public class Game implements Serializable {
+    @Valid
     private Integer id;
+    @Valid
+    @NotNull(groups = {New.class, Existing.class})
     private String name;
+
+    public Game() {
+
+    }
 
     public Game(Builder builder) {
         this.id = builder.id;
@@ -68,5 +77,11 @@ public class Game implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public interface Existing {
+    }
+
+    public interface New {
     }
 }

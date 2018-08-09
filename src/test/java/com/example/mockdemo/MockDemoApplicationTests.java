@@ -77,7 +77,7 @@ public class MockDemoApplicationTests {
                 .withCityList(Arrays.asList(new City.Builder()
                         .withId(100)
                         .withCityName("wuXi-china")
-                        .builder()))
+                        .build()))
                 .build();
         when(gameService.getGameById(anyInt())).thenReturn(game);
         this.mockMvc.perform(MockMvcRequestBuilders.post(url)
@@ -98,17 +98,10 @@ public class MockDemoApplicationTests {
                 .withCityList(Arrays.asList(new City.Builder()
                         .withId(100)
                         .withCityName("wuXi-china")
-                        .builder()))
+                        .build()))
                 .build();
         String content = JSON.toJSONString(game);
         Assert.assertNotNull(content, "Request must not be null");
-        /**
-         * TODO
-         * 请求为json时，会报错Type = org.springframework.web.HttpMediaTypeNotSupportedException。
-         * 根据调用栈追踪猜测是缺少jackson-dataformat-xml的jar，导致
-         * controller中方法的入参注解 @RequestBoy和@validate报错
-         * 因为要下班了，这里就不在深究了
-         */
 
         // actual test code
         this.mockMvc.perform(MockMvcRequestBuilders.post(url)

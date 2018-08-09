@@ -41,7 +41,7 @@ public class City implements Serializable {
             return this;
         }
 
-        public City builder() {
+        public City build() {
             return new City(this);
         }
     }

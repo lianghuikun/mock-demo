@@ -28,13 +28,13 @@ public class GameController {
         return gameService.getGameById(id);
     }
 
-    @PutMapping(value="/updateGame", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value="/updateGame", consumes=MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void updateGame(@Validated(Game.Existing.class) @RequestBody Game game) {
         gameService.updateGame(game);
     }
 
-    @PostMapping(value="/saveGame", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value="/saveGame", consumes=MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public void saveGame(@Validated(Game.New.class) @RequestBody Game game) {
         gameService.updateGame(game);

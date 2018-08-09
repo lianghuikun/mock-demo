@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @JsonIgnoreProperties(ignoreUnknown = true)，将这个注解写在类上之后，就会忽略类中不存在的字段，
@@ -29,6 +30,8 @@ public class Game implements Serializable {
     @Valid
     @NotNull(groups = {New.class, Existing.class})
     private String name;
+    @Valid
+    private List<City> cityList;
 
     public Game() {
 
@@ -37,11 +40,14 @@ public class Game implements Serializable {
     public Game(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
+        this.cityList = builder.cityList;
     }
 
     public static class Builder {
         private Integer id;
         private String name;
+        private List<City> cityList;
+
 
         public Builder withId(Integer id) {
             this.id = id;
@@ -51,6 +57,11 @@ public class Game implements Serializable {
 
         public Builder withName(String name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder withCityList(List<City> cityList) {
+            this.cityList = cityList;
             return this;
         }
 
@@ -77,6 +88,14 @@ public class Game implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<City> getCityList() {
+        return cityList;
+    }
+
+    public void setCityList(List<City> cityList) {
+        this.cityList = cityList;
     }
 
     public interface Existing {

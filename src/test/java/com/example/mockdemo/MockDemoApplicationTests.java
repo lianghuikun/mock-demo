@@ -1,35 +1,30 @@
 package com.example.mockdemo;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.example.mockdemo.controller.GameController;
+import com.example.mockdemo.domain.City;
 import com.example.mockdemo.domain.Game;
 import com.example.mockdemo.service.GameService;
-import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import java.util.Arrays;
+import java.util.List;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -51,20 +46,31 @@ public class MockDemoApplicationTests {
     }
 
     @Test
+    public void testList() {
+
+    }
+
+    @Test
     public void testGetGameById() throws Exception {
         String url = "/game/getGameById";
         Game game = new Game.Builder()
                 .withId(1)
                 .withName("coco")
+                .withCityList(Arrays.asList(new City.Builder()
+                        .withId(100)
+                        .withCityName("wuxi")
+                        .builder()))
                 .build();
-        Mockito.when(gameService.getGameById(Mockito.anyInt())).thenReturn(game);
+        when(gameService.getGameById(anyInt())).thenReturn(game);
 
-        ResultActions resultActions = this.mockMvc.perform(MockMvcRequestBuilders.post(url)
+        this.mockMvc.perform(MockMvcRequestBuilders.post(url)
                 .param("id", "11"))
                 .andDo(MockMvcResultHandlers.print())// 打印结果
                 .andExpect(MockMvcResultMatchers.status().isOk())// 期望状态是200
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());// 响应的json串中需要包含name节点
-        MvcResult mvcResult = resultActions.andReturn();
+                .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString("coco")))// 响应报文中包含字符串 coco
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").exists())// 响应的json串中需要包含name节点
+                .andExpect(MockMvcResultMatchers.jsonPath("$.cityList").exists())// 返回结果必须包含list
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("coco"));// name属性值应当为coco
     }
 
 
@@ -89,7 +95,15 @@ public class MockDemoApplicationTests {
         Game game = new Game.Builder()
                 .withId(2)
                 .withName("joker")
+                .withCityList(Arrays.asList(new City.Builder()
+                        .withId(100)
+                        .withCityName("wuxi")
+                        .builder()))
                 .build();
+        /**
+         * 请求为json时，会报错。controller的入参 @RequestBoy和@validate导致的，
+         * 可能是因为少报，这里就不在深究了
+         */
         this.mockMvc.perform(MockMvcRequestBuilders.post(url)
                 .content(JSON.toJSONString(game))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -109,5 +123,24 @@ public class MockDemoApplicationTests {
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(MockMvcResultHandlers.print());
 
+    }
+
+
+    @Test
+    public void test() {
+        //创建mock对象，参数可以是类，也可以是接口
+        List<String> list = mock(List.class);
+
+        //设置方法的预期返回值
+        when(list.get(0)).thenReturn("helloworld");
+
+        String result = list.get(0);
+
+        //junit测试
+        Assert.assertEquals("helloworld", result);
+
+        List<String> list2 = mock(List.class);
+
+        when(list2.get(anyInt())).thenReturn("hello", "world");
     }
 }

@@ -37,6 +37,6 @@ public class GameController {
     @PostMapping(value="/saveGame", consumes=MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public void saveGame(@Validated(Game.New.class) @RequestBody Game game) {
-        gameService.updateGame(game);
+        gameService.saveGame(game);
     }
 }

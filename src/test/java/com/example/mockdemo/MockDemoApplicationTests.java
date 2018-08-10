@@ -22,7 +22,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -79,6 +82,9 @@ public class MockDemoApplicationTests {
                         .withCityName("wuXi-china")
                         .build()))
                 .build();
+        // doThrow
+//        doThrow(new NullPointerException()).when(gameService).getGameById(anyInt());
+
         when(gameService.getGameById(anyInt())).thenReturn(game);
         this.mockMvc.perform(MockMvcRequestBuilders.post(url)
                 .param("id", "11"))
@@ -103,11 +109,16 @@ public class MockDemoApplicationTests {
         String content = JSON.toJSONString(game);
         Assert.assertNotNull(content, "Request must not be null");
 
+        // 测试异常
+//        doThrow(new NullPointerException()).when(gameService).saveGame(any(Game.class));
         // actual test code
         this.mockMvc.perform(MockMvcRequestBuilders.post(url)
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(MockMvcResultHandlers.print());
+
+
+        // TODO  doThrow
     }
 
 

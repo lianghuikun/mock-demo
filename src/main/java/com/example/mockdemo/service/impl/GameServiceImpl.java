@@ -4,6 +4,7 @@ import com.example.mockdemo.domain.Game;
 import com.example.mockdemo.service.GameService;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -11,7 +12,10 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game getGameById(Integer id) {
-        return null;
+        return new Game.Builder()
+                .withId(1)
+                .withName("name")
+                .build();
     }
 
     @Override
@@ -26,6 +30,12 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<Game> getGameList() {
-        return null;
+
+        List<Game> gameList = Arrays.asList(new Game.Builder()
+                .withId(1)
+                .withName("name")
+                .build());
+
+        return gameList;
     }
 }
